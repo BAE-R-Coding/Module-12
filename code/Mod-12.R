@@ -22,7 +22,8 @@ tw <- tweet %>%
 
 ggplot(tw)+
   geom_point(mapping = aes(datetime,n), alpha = .5)+
-  geom_vline(xintercept = ymd_hms("2017-08-26 3:00:00"), color = "red")+
+  geom_vline(xintercept = ymd_hms("2017-08-26 03:00:00"), color = "red")+
+  labs(x = NULL, y = "Number of tweets")+
   theme_bw()
 
 #------------------------------------------------------------------------
@@ -41,7 +42,9 @@ word <- tweet%>%
 
 ggplot(word)+
   geom_col(mapping = aes(word, n))+
-  coord_flip()
+  labs(x = NULL)+
+  coord_flip()+
+  theme_bw()
 
 
 #---------------------------------------------------------------------------
@@ -64,8 +67,7 @@ sent <- get_sentiments("afinn")
 f_tweet <- tweet %>%
   unnest_tokens(word, tweet)%>%
   anti_join(new_stop)%>%
-  group_by(date)%>%
-  count(word, sort = TRUE)
+  group_by(date)
 
 tweet_sent <- f_tweet%>%
   inner_join(sent)%>%
@@ -73,4 +75,6 @@ tweet_sent <- f_tweet%>%
 
 tweet_sent %>%
   ggplot()+
-  geom_col(mapping = aes(date, mean))
+  geom_col(mapping = aes(date, mean))+
+  scale_x_date(date_breaks = "day", date_labels = "%d")
+
