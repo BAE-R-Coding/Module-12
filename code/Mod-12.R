@@ -59,15 +59,16 @@ ref_tweet%>%
 
 #---------------------------------------------------------------------------
 
-get_sentiments("afinn")
+sent <- get_sentiments("afinn")
 
 f_tweet <- tweet %>%
-  group_by(date)%>%
   unnest_tokens(word, tweet)%>%
+  anti_join(new_stop)%>%
+  group_by(date)%>%
   count(word, sort = TRUE)
 
 tweet_sent <- f_tweet%>%
-  inner_join(get_sentiments("afinn"))%>%
+  inner_join(sent)%>%
   summarize(mean = mean(value))
 
 tweet_sent %>%
